@@ -286,16 +286,16 @@
         text-align: center;
         animation: borderPulse 3s ease-in-out infinite;
       }
-      .coming-soon-banner span:first-child {
+      .csb-title {
         font-family: "Bebas Neue", sans-serif;
-        font-size: 22px;
+        font-size: 20px;
         letter-spacing: 3px;
         color: #ff3fa4;
       }
-      .banner-sub {
-        font-size: 12px;
+      .csb-sub {
+        font-size: 11px;
         letter-spacing: 2px;
-        color: rgba(255,255,255,0.4);
+        color: rgba(255,255,255,0.35);
         text-transform: uppercase;
       }
       @keyframes borderPulse {
@@ -306,7 +306,7 @@
         width: 100%;
         aspect-ratio: 3 / 4;
         background: #111;
-        border: 1px dashed rgba(255,63,164,0.3);
+        border: 1px dashed rgba(255,63,164,0.25);
         display: flex;
         flex-direction: column;
         align-items: center;
@@ -314,19 +314,20 @@
         gap: 12px;
       }
       .placeholder-icon {
-        font-size: 32px;
-        opacity: 0.3;
+        font-size: 28px;
+        opacity: 0.25;
       }
       .placeholder-text {
         font-family: "Bebas Neue", sans-serif;
-        font-size: 14px;
+        font-size: 13px;
         letter-spacing: 4px;
-        color: rgba(255,63,164,0.4);
+        color: rgba(255,63,164,0.35);
       }
       .shooting-placeholder {
-        aspect-ratio: auto;
-        min-height: 100%;
-        height: 100%;
+        width: 100%;
+        aspect-ratio: 4 / 3;
+        background: #111;
+        border: 1px dashed rgba(255,255,255,0.06);
       }
 
       .theme-contact {
@@ -489,6 +490,56 @@
       }
       .contact-form input:focus,
       .contact-form textarea:focus { outline: none; border-color: var(--accent); box-shadow: 0 0 0 2px rgba(255,63,164,0.2); }
+      .contact-form {
+        max-width: 560px;
+        margin: 48px auto 0;
+        display: flex;
+        flex-direction: column;
+        gap: 24px;
+      }
+      .form-group {
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+      }
+      .form-group label {
+        font-family: "Barlow Condensed", sans-serif;
+        font-size: 10px;
+        letter-spacing: 4px;
+        text-transform: uppercase;
+        color: rgba(255,255,255,0.35);
+      }
+      .form-group input,
+      .form-group textarea {
+        background: rgba(255,255,255,0.04);
+        border: 1px solid rgba(255,255,255,0.1);
+        border-radius: 0;
+        padding: 14px 16px;
+        color: #f5f5f5;
+        font-family: "Barlow Condensed", sans-serif;
+        font-size: 15px;
+        letter-spacing: 1px;
+        outline: none;
+        resize: none;
+        transition: border-color 0.3s;
+      }
+      .form-group input:focus,
+      .form-group textarea:focus {
+        border-color: #ff3fa4;
+      }
+      .form-group input::placeholder,
+      .form-group textarea::placeholder {
+        color: rgba(255,255,255,0.2);
+      }
+      .btn-primary {
+        border: 1px solid var(--accent);
+        background: var(--accent);
+        color: #111;
+        font-family: "Bebas Neue", sans-serif;
+        letter-spacing: 0.13em;
+        padding: 0.58rem 1rem;
+        cursor: pointer;
+      }
 
       .products-wrap { margin-top: 0.8rem; }
       .products-grid {
@@ -806,7 +857,6 @@
             <div class="products-wrap">
               <div class="products-grid">
                 <article class="product-card main stagger">
-                  <div class="product-id" hidden>tshirt</div>
                   <div class="product-media"><img src="./assets/products/corridor-05.jpg" alt="T-shirt LDT CREW" /></div>
                   <div class="product-gradient"></div>
                   <span class="limited">LIMITED</span><a href="#" class="see-product" data-product="tshirt" data-origin="page-tshirts">VOIR LE PRODUIT</a>
@@ -881,12 +931,12 @@
         <section class="page-theme theme-cagoule">
           <div class="container">
             <header class="compact-hero">
-              <h1 class="hero-title-anim letter-wrap" id="cagouleTitle"></h1>
+              <h1 class="section-title">CAGOULES</h1>
               <p>— Collection LDT CREW</p>
             </header>
             <div class="coming-soon-banner">
-              <span>🔥 Collection Cagoules — Bientôt disponible</span>
-              <span class="banner-sub">Inscris-toi à la newsletter pour être alerté en premier</span>
+              <span class="csb-title">🔥 Collection Cagoules — Bientôt disponible</span>
+              <span class="csb-sub">Inscris-toi à la newsletter pour être alerté en premier</span>
             </div>
 
             <div class="products-wrap">
@@ -942,11 +992,22 @@
             <div class="contact-box hero-title-anim">
               <h1>ÉCRIS-NOUS</h1>
               <p class="sub">on répond vite</p>
-              <form class="contact-form">
-                <input type="text" placeholder="Nom" />
-                <input type="email" placeholder="Email" />
-                <textarea rows="5" placeholder="Message"></textarea>
-                <button type="submit" class="btn primary" style="margin-top:0.6rem;">Envoyer</button>
+              <form class="contact-form" onsubmit="return false">
+                <div class="form-group">
+                  <label>NOM</label>
+                  <input type="text" placeholder="Ton nom" />
+                </div>
+                <div class="form-group">
+                  <label>EMAIL</label>
+                  <input type="email" placeholder="ton@email.com" />
+                </div>
+                <div class="form-group">
+                  <label>MESSAGE</label>
+                  <textarea rows="5" placeholder="Ton message..."></textarea>
+                </div>
+                <button type="submit" class="btn-primary">
+                  ENVOYER ↗
+                </button>
               </form>
             </div>
           </div>
