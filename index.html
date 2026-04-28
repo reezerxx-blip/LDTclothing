@@ -81,7 +81,21 @@
         background: #0b0b0b; border-left: 1px solid #282828; padding: 1rem; transition: right 260ms ease;
       }
       .mobile.open { right: 0; }
-      .mobile button { display: block; margin: 0.85rem 0; border: 0; background: none; color: #fff; font-family: "Bebas Neue", sans-serif; letter-spacing: 0.12em; cursor: pointer; }
+      .mobile button {
+        display: block;
+        width: 100%;
+        margin: 0.45rem 0;
+        padding: 0.65rem 0.2rem;
+        border: 0;
+        background: none;
+        color: #fff;
+        text-align: left;
+        font-family: "Bebas Neue", sans-serif;
+        font-size: 1.28rem;
+        letter-spacing: 0.12em;
+        line-height: 1.1;
+        cursor: pointer;
+      }
 
       .breadcrumb {
         display: none;
@@ -472,7 +486,14 @@
       }
       @media (max-width: 980px) {
         .menu { display: none; }
-        .burger { display: inline-block; }
+        .burger {
+          display: inline-block;
+          font-family: "Bebas Neue", sans-serif;
+          font-size: 1.05rem;
+          letter-spacing: 0.1em;
+          padding: 0.42rem 0.62rem;
+          min-height: 38px;
+        }
       }
       @media (max-width: 900px) {
         .shooting-grid { columns: 2 180px; }
