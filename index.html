@@ -73,29 +73,61 @@
       .menu button.active { color: #fff; }
       .menu button.crew-pink,
       .menu button.crew-pink.active { color: var(--accent); }
-      .mobile button.crew-pink { color: var(--accent); }
+      .mobile .crew-pink { color: var(--accent); }
       .cart { font-family: "Bebas Neue", sans-serif; letter-spacing: 0.1em; border: 1px solid #343434; padding: 0.35rem 0.55rem; }
       .burger { display: none; border: 1px solid #444; background: transparent; color: #fff; }
       .mobile {
         position: fixed; z-index: 95; right: -100%; top: 0; width: min(86vw, 320px); height: 100vh;
         background: #0b0b0b; border-left: 1px solid #282828; padding: 1rem; transition: right 260ms ease;
+        display: flex; flex-direction: column; overflow-y: auto;
       }
       .mobile.open { right: 0; }
-      .mobile button {
-        display: block;
-        width: 100%;
-        margin: 0.45rem 0;
-        padding: 0.65rem 0.2rem;
-        border: 0;
-        background: none;
-        color: #fff;
-        text-align: left;
-        font-family: "Bebas Neue", sans-serif;
-        font-size: 1.28rem;
-        letter-spacing: 0.12em;
-        line-height: 1.1;
-        cursor: pointer;
+      .mobile-menu-head { display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.8rem; }
+      .mobile-menu-logo .main { font-family: "Bebas Neue", sans-serif; letter-spacing: 0.1em; font-size: 1.2rem; }
+      .mobile-menu-logo .sub { font-family: "Dancing Script", cursive; color: var(--accent); font-size: 1rem; }
+      .mobile-close-btn {
+        border: 1px solid #3a3a3a; background: rgba(255,255,255,0.02); color: #fff;
+        font-family: "Bebas Neue", sans-serif; letter-spacing: 0.08em; cursor: pointer; padding: 0.3rem 0.55rem;
       }
+      .mobile-menu-moto { position: relative; width: 100%; height: 220px; overflow: hidden; margin-bottom: 32px; }
+      .moto-img {
+        width: 100%; height: 100%; object-fit: cover; object-position: center;
+        animation: motoZoom 6s ease-in-out infinite alternate;
+      }
+      @keyframes motoZoom { from { transform: scale(1); } to { transform: scale(1.07); } }
+      .moto-overlay {
+        position: absolute; inset: 0;
+        background: linear-gradient(to bottom, rgba(8,8,8,0.2) 0%, rgba(8,8,8,0.85) 100%);
+      }
+      .moto-label { position: absolute; bottom: 16px; left: 20px; display: flex; align-items: baseline; gap: 8px; z-index: 2; }
+      .moto-city {
+        font-family: "Dancing Script", cursive; font-size: 28px; color: #ff3fa4;
+        text-shadow: 0 0 20px rgba(255,63,164,0.6); animation: pinkPulse 3s ease-in-out infinite;
+      }
+      .moto-num { font-family: "Bebas Neue", sans-serif; font-size: 32px; color: rgba(255,255,255,0.9); letter-spacing: 2px; }
+      @keyframes pinkPulse { 0%,100% { text-shadow: 0 0 10px rgba(255,63,164,0.45); } 50% { text-shadow: 0 0 22px rgba(255,63,164,0.75); } }
+      .mobile-nav-links a {
+        font-family: "Bebas Neue", sans-serif; font-size: 32px; letter-spacing: 4px;
+        color: rgba(255,255,255,0.8); display: block; padding: 10px 20px;
+        border-bottom: 1px solid rgba(255,255,255,0.05); transition: color 0.3s, padding-left 0.3s; text-decoration: none;
+      }
+      .mobile-nav-links a:hover,
+      .mobile-nav-links a:active { color: #ff3fa4; padding-left: 32px; }
+      .mobile-menu-footer {
+        padding: 24px 20px; display: flex; justify-content: space-between; align-items: center;
+        border-top: 1px solid rgba(255,255,255,0.06); margin-top: auto;
+      }
+      .mobile-menu-footer span {
+        font-size: 11px; letter-spacing: 3px; text-transform: uppercase; color: rgba(255,255,255,0.3);
+      }
+      .mobile-menu-footer .tiktok-handle {
+        color: #ff3fa4; font-family: "Dancing Script", cursive; font-size: 16px; letter-spacing: 1px;
+      }
+      .social-link {
+        color: var(--accent);
+        text-decoration: none;
+      }
+      .social-link:hover { text-decoration: underline; }
 
       .breadcrumb {
         display: none;
@@ -242,6 +274,60 @@
       .letter-wrap span { opacity: 0; display: inline-block; transform: translateY(10px); }
       .letter-wrap.animate span { animation: letterIn 420ms ease forwards; }
       @keyframes letterIn { to { opacity: 1; transform: translateY(0); } }
+      .coming-soon-banner {
+        border: 1px solid rgba(255,63,164,0.3);
+        background: rgba(255,63,164,0.05);
+        padding: 20px 32px;
+        margin-bottom: 48px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 8px;
+        text-align: center;
+        animation: borderPulse 3s ease-in-out infinite;
+      }
+      .coming-soon-banner span:first-child {
+        font-family: "Bebas Neue", sans-serif;
+        font-size: 22px;
+        letter-spacing: 3px;
+        color: #ff3fa4;
+      }
+      .banner-sub {
+        font-size: 12px;
+        letter-spacing: 2px;
+        color: rgba(255,255,255,0.4);
+        text-transform: uppercase;
+      }
+      @keyframes borderPulse {
+        0%, 100% { box-shadow: 0 0 0 rgba(255,63,164,0); }
+        50% { box-shadow: 0 0 22px rgba(255,63,164,0.18); }
+      }
+      .product-placeholder {
+        width: 100%;
+        aspect-ratio: 3 / 4;
+        background: #111;
+        border: 1px dashed rgba(255,63,164,0.3);
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        gap: 12px;
+      }
+      .placeholder-icon {
+        font-size: 32px;
+        opacity: 0.3;
+      }
+      .placeholder-text {
+        font-family: "Bebas Neue", sans-serif;
+        font-size: 14px;
+        letter-spacing: 4px;
+        color: rgba(255,63,164,0.4);
+      }
+      .shooting-placeholder {
+        aspect-ratio: auto;
+        min-height: 100%;
+        height: 100%;
+      }
 
       .theme-contact {
         background: radial-gradient(circle at center, rgba(255,63,164,0.14), #080808 60%);
@@ -254,6 +340,17 @@
           linear-gradient(180deg, rgba(255,63,164,0.08), transparent 28%),
           radial-gradient(circle at 78% 14%, rgba(255,63,164,0.12), transparent 45%),
           #080808;
+      }
+      .crew-video-section {
+        margin-bottom: 80px;
+      }
+      .insta-embed-wrapper {
+        display: flex;
+        justify-content: center;
+        padding: 0 20px;
+      }
+      .instagram-media {
+        filter: brightness(0.95);
       }
       .crew-intro {
         margin: 0.5rem 0 1rem;
@@ -450,6 +547,30 @@
         font-family: "Bebas Neue", sans-serif; letter-spacing: 0.13em; animation: pulseBorder 2.2s ease-in-out infinite;
         background: none; cursor: pointer;
       }
+      .crew-teaser {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 32px 0;
+        border-top: 1px solid rgba(255,255,255,0.06);
+        margin-top: 60px;
+        gap: 0.8rem;
+      }
+      .crew-teaser span {
+        font-size: 13px;
+        letter-spacing: 2px;
+        text-transform: uppercase;
+        color: rgba(255,255,255,0.35);
+      }
+      .btn-outline {
+        border: 1px solid var(--accent);
+        background: none;
+        color: var(--accent);
+        font-family: "Bebas Neue", sans-serif;
+        letter-spacing: 0.13em;
+        padding: 0.55rem 0.9rem;
+        cursor: pointer;
+      }
 
       .newsletter-section { padding: 100px 0; }
       .newsletter { text-align: center; border-top: 1px solid rgba(255,255,255,0.07); padding-top: 2rem; }
@@ -543,13 +664,33 @@
     </div>
 
     <aside class="mobile" id="mobileMenu">
-      <button id="closeMobile">Fermer ✕</button>
-      <button data-nav="page-offre">OFFRE</button>
-      <button class="crew-pink" data-nav="page-crew">CREW</button>
-      <button data-nav="page-tshirts">TEE-SHIRTS</button>
-      <button data-nav="page-veste">VESTE</button>
-      <button data-nav="page-cagoule">CAGOULE</button>
-      <button data-nav="page-contact">CONTACT</button>
+      <div class="mobile-menu-head">
+        <div class="mobile-menu-logo">
+          <div class="main">LDT CREW</div>
+          <div class="sub">Lyon city 69</div>
+        </div>
+        <button id="closeMobile" class="mobile-close-btn">✕ Fermer</button>
+      </div>
+      <div class="mobile-menu-moto">
+        <img src="./moto-menu.jpg" alt="LDT CREW Bikelife Lyon" class="moto-img" />
+        <div class="moto-overlay"></div>
+        <div class="moto-label">
+          <span class="moto-city">Lyon City</span>
+          <span class="moto-num">69</span>
+        </div>
+      </div>
+      <nav class="mobile-nav-links">
+        <a href="#" data-nav="page-offre">OFFRE</a>
+        <a href="#" class="crew-pink" data-nav="page-crew">CREW</a>
+        <a href="#" data-nav="page-tshirts">TEE-SHIRTS</a>
+        <a href="#" data-nav="page-veste">VESTE</a>
+        <a href="#" data-nav="page-cagoule">CAGOULE</a>
+        <a href="#" data-nav="page-contact">CONTACT</a>
+      </nav>
+      <div class="mobile-menu-footer">
+        <a class="tiktok-handle social-link" href="https://www.instagram.com/6.ldt.9/" target="_blank" rel="noopener noreferrer">@6.ldt.9</a>
+        <span>Lyon City 69</span>
+      </div>
     </aside>
 
     <div id="app">
@@ -610,6 +751,25 @@
               <h1 class="hero-title-anim" style="color:var(--accent);">CREW</h1>
               <p>— Galerie LDT CREW</p>
             </header>
+            <div class="crew-video-section">
+              <p class="section-label">— En vidéo</p>
+              <h2 class="section-title">L'AMBIANCE LDT</h2>
+              <div class="insta-embed-wrapper">
+                <blockquote
+                  class="instagram-media"
+                  data-instgrm-permalink="https://www.instagram.com/p/DVMQEBsCAmg/"
+                  data-instgrm-version="14"
+                  style="
+                    background:#111;
+                    border: 1px solid rgba(255,63,164,0.2);
+                    border-radius: 0;
+                    max-width: 800px;
+                    width: 100%;
+                    margin: 0 auto;
+                  ">
+                </blockquote>
+              </div>
+            </div>
             <p class="crew-intro">
               Toute l'ambiance LDT en images: bikelife, street, Lyon city 69. Tu peux faire defiler et explorer tous les visuels du crew.
             </p>
@@ -668,21 +828,10 @@
               <p class="soon-text">D'autres pièces arrivent bientôt — rejoins la newsletter pour être le premier informé <span class="arrow">↓</span></p>
             </div>
 
-            <section class="shooting-section">
-              <div class="section-label">— En action</div>
-              <h2>L'UNIVERS LDT</h2>
-              <div class="shooting-grid">
-                <article class="shooting-item stagger" style="min-height:320px;"><img src="./assets/products/corridor-01.jpg" alt="shooting LDT CREW 1" /></article>
-                <article class="shooting-item stagger" style="min-height:220px;"><img src="./assets/products/corridor-02.jpg" alt="shooting LDT CREW 2" /></article>
-                <article class="shooting-item stagger" style="min-height:280px;"><img src="./assets/products/corridor-03.jpg" alt="shooting LDT CREW 3" /></article>
-                <article class="shooting-item stagger" style="min-height:240px;"><img src="./assets/products/corridor-04.jpg" alt="shooting LDT CREW 4" /></article>
-                <article class="shooting-item stagger" style="min-height:350px;"><img src="./assets/products/corridor-06.jpg" alt="shooting LDT CREW 5" /></article>
-                <article class="shooting-item stagger" style="min-height:210px;"><img src="./assets/products/corridor-07.jpg" alt="shooting LDT CREW 6" /></article>
-                <article class="shooting-item stagger" style="min-height:290px;"><img src="./assets/products/corridor-09.jpg" alt="shooting LDT CREW 7" /></article>
-                <article class="shooting-item stagger" style="min-height:250px;"><img src="./assets/products/corridor-12.jpg" alt="shooting LDT CREW 8" /></article>
-              </div>
-              <div class="shooting-cta-wrap"><button class="shooting-cta" data-nav="page-crew">VOIR TOUT L'UNIVERS ↗</button></div>
-            </section>
+            <div class="crew-teaser">
+              <span>Découvre l'univers complet LDT →</span>
+              <button onclick="navigate('page-crew')" class="btn-outline">PAGE CREW ↗</button>
+            </div>
           </div>
         </section>
       </section>
@@ -720,21 +869,10 @@
               <p class="soon-text">D'autres pièces arrivent bientôt — rejoins la newsletter pour être le premier informé <span class="arrow">↓</span></p>
             </div>
 
-            <section class="shooting-section">
-              <div class="section-label">— En action</div>
-              <h2>L'UNIVERS LDT</h2>
-              <div class="shooting-grid">
-                <article class="shooting-item stagger" style="min-height:320px;"><img src="./assets/products/corridor-10.jpg" alt="shooting LDT CREW 1" /></article>
-                <article class="shooting-item stagger" style="min-height:220px;"><img src="./assets/products/corridor-11.jpg" alt="shooting LDT CREW 2" /></article>
-                <article class="shooting-item stagger" style="min-height:280px;"><img src="./assets/products/corridor-08.jpg" alt="shooting LDT CREW 3" /></article>
-                <article class="shooting-item stagger" style="min-height:240px;"><img src="./assets/products/corridor-06.jpg" alt="shooting LDT CREW 4" /></article>
-                <article class="shooting-item stagger" style="min-height:350px;"><img src="./assets/products/corridor-14.jpg" alt="shooting LDT CREW 5" /></article>
-                <article class="shooting-item stagger" style="min-height:210px;"><img src="./assets/products/corridor-15.jpg" alt="shooting LDT CREW 6" /></article>
-                <article class="shooting-item stagger" style="min-height:290px;"><img src="./assets/products/corridor-16.jpg" alt="shooting LDT CREW 7" /></article>
-                <article class="shooting-item stagger" style="min-height:250px;"><img src="./assets/products/corridor-09.jpg" alt="shooting LDT CREW 8" /></article>
-              </div>
-              <div class="shooting-cta-wrap"><button class="shooting-cta" data-nav="page-crew">VOIR TOUT L'UNIVERS ↗</button></div>
-            </section>
+            <div class="crew-teaser">
+              <span>Découvre l'univers complet LDT →</span>
+              <button onclick="navigate('page-crew')" class="btn-outline">PAGE CREW ↗</button>
+            </div>
           </div>
         </section>
       </section>
@@ -746,23 +884,42 @@
               <h1 class="hero-title-anim letter-wrap" id="cagouleTitle"></h1>
               <p>— Collection LDT CREW</p>
             </header>
+            <div class="coming-soon-banner">
+              <span>🔥 Collection Cagoules — Bientôt disponible</span>
+              <span class="banner-sub">Inscris-toi à la newsletter pour être alerté en premier</span>
+            </div>
 
             <div class="products-wrap">
               <div class="products-grid">
                 <article class="product-card main stagger">
-                  <div class="product-media"><img src="" alt="Cagoule LDT CREW principale" /></div>
+                  <div class="product-media">
+                    <div class="product-placeholder">
+                      <span class="placeholder-icon">📷</span>
+                      <span class="placeholder-text">PHOTO BIENTÔT</span>
+                    </div>
+                  </div>
                   <div class="product-gradient"></div>
                   <span class="limited">LIMITED</span><a href="#" class="see-product" data-product="cagoule" data-origin="page-cagoule">VOIR LE PRODUIT</a>
                   <div class="product-content"><div class="cat">CAGOULE</div><div class="name">CAGOULE BIKELIFE</div><div class="price">29 EUR</div></div>
                 </article>
                 <article class="product-card stagger">
-                  <div class="product-media"><img src="" alt="Veste LDT CREW" /></div>
+                  <div class="product-media">
+                    <div class="product-placeholder">
+                      <span class="placeholder-icon">📷</span>
+                      <span class="placeholder-text">PHOTO BIENTÔT</span>
+                    </div>
+                  </div>
                   <div class="product-gradient"></div>
                   <span class="limited">LIMITED</span><a href="#" class="see-product" data-product="cagoule" data-origin="page-cagoule">VOIR LE PRODUIT</a>
                   <div class="product-content"><div class="cat">CAGOULE</div><div class="name">CAGOULE LYON CITY</div><div class="price">29 EUR</div></div>
                 </article>
                 <article class="product-card stagger">
-                  <div class="product-media"><img src="" alt="T-shirt LDT CREW" /></div>
+                  <div class="product-media">
+                    <div class="product-placeholder">
+                      <span class="placeholder-icon">📷</span>
+                      <span class="placeholder-text">PHOTO BIENTÔT</span>
+                    </div>
+                  </div>
                   <div class="product-gradient"></div>
                   <span class="limited">LIMITED</span><a href="#" class="see-product" data-product="cagoule" data-origin="page-cagoule">VOIR LE PRODUIT</a>
                   <div class="product-content"><div class="cat">CAGOULE</div><div class="name">CAGOULE SIGNATURE</div><div class="price">35 EUR</div></div>
@@ -771,21 +928,10 @@
               <p class="soon-text">D'autres pièces arrivent bientôt — rejoins la newsletter pour être le premier informé <span class="arrow">↓</span></p>
             </div>
 
-            <section class="shooting-section">
-              <div class="section-label">— En action</div>
-              <h2>L'UNIVERS LDT</h2>
-              <div class="shooting-grid">
-                <article class="shooting-item stagger" style="min-height:320px;"><img src="" alt="shooting LDT CREW 1" /></article>
-                <article class="shooting-item stagger" style="min-height:220px;"><img src="" alt="shooting LDT CREW 2" /></article>
-                <article class="shooting-item stagger" style="min-height:280px;"><img src="" alt="shooting LDT CREW 3" /></article>
-                <article class="shooting-item stagger" style="min-height:240px;"><img src="" alt="shooting LDT CREW 4" /></article>
-                <article class="shooting-item stagger" style="min-height:350px;"><img src="" alt="shooting LDT CREW 5" /></article>
-                <article class="shooting-item stagger" style="min-height:210px;"><img src="" alt="shooting LDT CREW 6" /></article>
-                <article class="shooting-item stagger" style="min-height:290px;"><img src="" alt="shooting LDT CREW 7" /></article>
-                <article class="shooting-item stagger" style="min-height:250px;"><img src="" alt="shooting LDT CREW 8" /></article>
-              </div>
-              <div class="shooting-cta-wrap"><button class="shooting-cta" data-nav="page-crew">VOIR TOUT L'UNIVERS ↗</button></div>
-            </section>
+            <div class="crew-teaser">
+              <span>Découvre l'univers complet LDT →</span>
+              <button onclick="navigate('page-crew')" class="btn-outline">PAGE CREW ↗</button>
+            </div>
           </div>
         </section>
       </section>
@@ -897,6 +1043,7 @@
         <div>
           <div class="f-title">LDT CREW</div>
           <p>Streetwear Bikelife Premium — Lyon City 69.</p>
+          <p><a class="social-link" href="https://www.instagram.com/6.ldt.9/" target="_blank" rel="noopener noreferrer">Instagram: @6.ldt.9</a></p>
         </div>
         <div>
           <div class="f-title">Mon compte</div>
@@ -1203,6 +1350,13 @@
           setActiveLink(pageId);
           updateBreadcrumb(pageId);
           document.body.classList.toggle("on-home", pageId === "page-home");
+          if (pageId === "page-crew") {
+            setTimeout(() => {
+              if (window.instgrm) {
+                window.instgrm.Embeds.process();
+              }
+            }, 300);
+          }
 
           requestAnimationFrame(() => {
             next.classList.add("show");
@@ -1217,7 +1371,8 @@
       window.navigate = navigate;
 
       navButtons.forEach((btn) => {
-        btn.addEventListener("click", () => {
+        btn.addEventListener("click", (event) => {
+          if (btn.tagName === "A") event.preventDefault();
           navigate(btn.dataset.nav);
           mobileMenu.classList.remove("open");
         });
@@ -1247,7 +1402,31 @@
         navigate("page-offre");
       });
 
-      openMobile?.addEventListener("click", () => mobileMenu.classList.add("open"));
+      openMobile?.addEventListener("click", () => {
+        mobileMenu.classList.add("open");
+        const motoImg = document.querySelector(".mobile-menu-moto");
+        const menuLinks = document.querySelectorAll(".mobile-nav-links a");
+        if (motoImg) motoImg.style.opacity = "0";
+        menuLinks.forEach((l) => {
+          l.style.opacity = "0";
+          l.style.transform = "translateY(20px)";
+        });
+
+        setTimeout(() => {
+          if (motoImg) {
+            motoImg.style.transition = "opacity 0.4s";
+            motoImg.style.opacity = "1";
+          }
+        }, 50);
+
+        menuLinks.forEach((link, i) => {
+          setTimeout(() => {
+            link.style.transition = "opacity 0.3s, transform 0.3s";
+            link.style.opacity = "1";
+            link.style.transform = "translateY(0)";
+          }, 150 + (i * 60));
+        });
+      });
       closeMobile?.addEventListener("click", () => mobileMenu.classList.remove("open"));
 
       window.addEventListener("scroll", () => {
@@ -1262,5 +1441,6 @@
       document.body.classList.toggle("on-home", currentPageId === "page-home");
       restartPageAnimations(document.getElementById(currentPageId));
     </script>
+    <script async src="//www.instagram.com/embed.js"></script>
   </body>
 </html>
