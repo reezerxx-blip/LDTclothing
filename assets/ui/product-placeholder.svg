@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="800" height="1000" viewBox="0 0 800 1000">
+  <rect width="800" height="1000" fill="#1b1b22" />
+  <rect x="80" y="120" width="640" height="760" fill="none" stroke="#2b2b34" stroke-width="5" />
+  <text x="50%" y="48%" text-anchor="middle" fill="#f4f4f5" font-family="Inter, Arial, sans-serif" font-size="44">
+    Photo Produit
+  </text>
+  <text x="50%" y="55%" text-anchor="middle" fill="#b8b8c2" font-family="Inter, Arial, sans-serif" font-size="24">
+    Remplace par ton vetement
+  </text>
+</svg>

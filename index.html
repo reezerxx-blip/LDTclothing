@@ -1,0 +1,1245 @@
+<!DOCTYPE html>
+<html lang="fr">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>LDT CREW — Lyon City 69</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@400;500;700&family=Bebas+Neue&family=Dancing+Script:wght@700&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      :root {
+        --bg: #080808;
+        --panel: #111;
+        --text: #f5f5f5;
+        --accent: #ff3fa4;
+      }
+
+      * { box-sizing: border-box; }
+      body {
+        margin: 0;
+        background: var(--bg);
+        color: var(--text);
+        font-family: "Barlow Condensed", sans-serif;
+      }
+
+      .site-bg { position: fixed; inset: 0; z-index: 0; pointer-events: none; }
+      body.on-home .site-bg { opacity: 0; }
+      .bg-layer { position: absolute; inset: 0; background-size: cover; background-position: center; opacity: 0; }
+      .bg-1 { background-image: url("./assets/products/bg-home-1.jpg.jpeg"); animation: fadeA 24s infinite; }
+      .bg-2 { background-image: url("./assets/products/bg-home-2.jpg.jpeg"); animation: fadeB 24s infinite; }
+      .bg-3 { background-image: url("./assets/products/bg-home-3.jpg.jpeg"); animation: fadeC 24s infinite; }
+      .bg-overlay { position: absolute; inset: 0; background: linear-gradient(rgba(0, 0, 0, 0.72), rgba(0, 0, 0, 0.72)); }
+      @keyframes fadeA { 0%,30%{opacity:1;} 36%,100%{opacity:0;} }
+      @keyframes fadeB { 0%,30%{opacity:0;} 36%,63%{opacity:1;} 69%,100%{opacity:0;} }
+      @keyframes fadeC { 0%,63%{opacity:0;} 69%,100%{opacity:1;} }
+
+      .announce {
+        position: fixed; top: 0; left: 0; right: 0; z-index: 90;
+        background: var(--accent); color: #111; overflow: hidden;
+      }
+      .ticker {
+        white-space: nowrap; display: inline-block; padding: 0.5rem 0;
+        animation: tickerLeft 18s linear infinite; font-weight: 700;
+      }
+      @keyframes tickerLeft { from { transform: translateX(0); } to { transform: translateX(-50%); } }
+
+      .header {
+        position: fixed; top: 34px; left: 0; right: 0; z-index: 80;
+        background: rgba(8, 8, 8, 0.25); border-bottom: 1px solid rgba(255,255,255,0.08);
+        backdrop-filter: blur(8px);
+      }
+      .header.scrolled { background: rgba(8, 8, 8, 0.9); }
+      .container { width: min(1200px, 92%); margin: 0 auto; }
+      .nav { min-height: 72px; display: flex; align-items: center; justify-content: space-between; gap: 0.8rem; }
+      .logo { border: 0; background: none; color: inherit; text-align: left; cursor: pointer; line-height: 0.9; }
+      .logo .main { font-family: "Bebas Neue", sans-serif; font-size: 1.5rem; letter-spacing: 0.08em; }
+      .logo .sub { font-family: "Dancing Script", cursive; font-size: 1.1rem; color: var(--accent); }
+
+      .menu { display: flex; gap: 1.1rem; }
+      .menu button {
+        border: 0; background: none; color: rgba(245,245,245,0.76); cursor: pointer;
+        font-family: "Bebas Neue", sans-serif; letter-spacing: 0.12em; position: relative;
+      }
+      .menu button::after {
+        content: ""; position: absolute; left: 0; bottom: -5px; width: 0; height: 2px; background: var(--accent);
+        transition: width 180ms ease;
+      }
+      .menu button:hover::after,
+      .menu button.active::after { width: 100%; }
+      .menu button.active { color: #fff; }
+      .menu button.crew-pink,
+      .menu button.crew-pink.active { color: var(--accent); }
+      .mobile button.crew-pink { color: var(--accent); }
+      .cart { font-family: "Bebas Neue", sans-serif; letter-spacing: 0.1em; border: 1px solid #343434; padding: 0.35rem 0.55rem; }
+      .burger { display: none; border: 1px solid #444; background: transparent; color: #fff; }
+      .mobile {
+        position: fixed; z-index: 95; right: -100%; top: 0; width: min(86vw, 320px); height: 100vh;
+        background: #0b0b0b; border-left: 1px solid #282828; padding: 1rem; transition: right 260ms ease;
+      }
+      .mobile.open { right: 0; }
+      .mobile button { display: block; margin: 0.85rem 0; border: 0; background: none; color: #fff; font-family: "Bebas Neue", sans-serif; letter-spacing: 0.12em; cursor: pointer; }
+
+      .breadcrumb {
+        display: none;
+        position: fixed;
+        top: 106px;
+        left: 0;
+        right: 0;
+        z-index: 79;
+        padding: 0.25rem 0;
+        background: rgba(8,8,8,0.45);
+        font-size: 0.7rem;
+        letter-spacing: 0.14em;
+        color: rgba(245,245,245,0.3);
+      }
+      .breadcrumb button {
+        border: 0; background: none; color: rgba(245,245,245,0.45);
+        cursor: pointer; letter-spacing: 0.14em; font-size: 0.7rem;
+      }
+      .breadcrumb.show { display: block; }
+
+      #app {
+        position: relative;
+        z-index: 2;
+        padding-top: 110px;
+        opacity: 1;
+        transform: translateY(0);
+        transition: opacity 300ms ease, transform 300ms ease;
+      }
+      #app.transitioning {
+        opacity: 0;
+        transform: translateY(-8px);
+      }
+
+      .page {
+        display: none;
+        min-height: calc(100vh - 110px);
+        opacity: 0;
+        transform: translateY(8px);
+        transition: opacity 400ms ease, transform 400ms ease;
+      }
+      .page.active {
+        display: block;
+      }
+      .page.show {
+        opacity: 1;
+        transform: translateY(0);
+      }
+
+      .hero-home {
+        position: relative; min-height: calc(100vh - 110px); display: grid; place-items: center; overflow: hidden;
+        background:
+          radial-gradient(circle at center, rgba(120, 10, 55, 0.28) 0%, rgba(8, 8, 8, 0.8) 58%),
+          repeating-linear-gradient(0deg, rgba(255, 63, 164, 0.07) 0 1px, transparent 1px 30px);
+      }
+      .home-slideshow {
+        position: absolute;
+        inset: 0;
+        z-index: 0;
+        pointer-events: none;
+      }
+      .home-slide {
+        position: absolute;
+        inset: 0;
+        background-size: cover;
+        background-position: center 22%;
+        background-repeat: no-repeat;
+        opacity: 0;
+      }
+      .home-slide.s1 {
+        background-image: url("./assets/products/bg-home-1.jpg.jpeg");
+        animation: homeFadeA 18s infinite;
+      }
+      .home-slide.s2 {
+        background-image: url("./assets/products/bg-home-2.jpg.jpeg");
+        animation: homeFadeB 18s infinite;
+      }
+      .home-slide.s3 {
+        background-image: url("./assets/products/bg-home-3.jpg.jpeg");
+        animation: homeFadeC 18s infinite;
+      }
+      @keyframes homeFadeA { 0%, 30% { opacity: 0.35; } 36%, 100% { opacity: 0; } }
+      @keyframes homeFadeB { 0%, 30% { opacity: 0; } 36%, 63% { opacity: 0.35; } 69%, 100% { opacity: 0; } }
+      @keyframes homeFadeC { 0%, 63% { opacity: 0; } 69%, 100% { opacity: 0.35; } }
+      .hero-home::after {
+        content: ""; position: absolute; inset: 0;
+        background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180' viewBox='0 0 120 120'%3E%3Cfilter id='n'%3E%3CfeTurbulence baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='120' height='120' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");
+        opacity: 0.28;
+      }
+      .hero-home .inner { position: relative; z-index: 2; text-align: center; }
+      .label { color: var(--accent); letter-spacing: 0.2em; font-size: 0.8rem; }
+      .hero-title { margin: 0.2rem 0 0; font-family: "Bebas Neue", sans-serif; font-size: clamp(3rem, 13vw, 9rem); letter-spacing: 0.08em; }
+      .hero-title .stroke { color: transparent; -webkit-text-stroke: 1.3px #f5f5f5; }
+      .slogan { margin: 0.2rem 0; font-family: "Dancing Script", cursive; font-size: clamp(2.2rem, 9vw, 5.2rem); color: var(--accent); text-shadow: 0 0 12px rgba(255,63,164,0.65); }
+      .subline { color: rgba(245,245,245,0.6); letter-spacing: 0.2em; }
+      .cta-row { margin-top: 1rem; display: flex; gap: 0.6rem; justify-content: center; flex-wrap: wrap; }
+      .btn { border: 1px solid #fff; color: #fff; padding: 0.6rem 1rem; background: none; font-family: "Barlow Condensed", sans-serif; letter-spacing: 0.12em; text-transform: uppercase; cursor: pointer; }
+      .btn.primary { background: var(--accent); border-color: var(--accent); color: #111; }
+      .btn.outline { animation: pulseBorder 2.2s ease-in-out infinite; }
+      @keyframes pulseBorder { 50% { border-color: var(--accent); box-shadow: 0 0 14px rgba(255,63,164,0.45); } }
+
+      .page-theme {
+        min-height: calc(100vh - 110px);
+        padding: 1.2rem 0 3rem;
+      }
+      .compact-hero {
+        height: 280px; display: grid; align-content: center; padding: 1.2rem;
+        border: 1px solid #202020; margin-bottom: 1.2rem; overflow: hidden; position: relative;
+      }
+      .compact-hero h1 {
+        margin: 0; font-family: "Bebas Neue", sans-serif; font-size: clamp(2.6rem, 8vw, 6rem); letter-spacing: 0.1em;
+      }
+      .compact-hero p { margin: 0; color: var(--accent); letter-spacing: 0.12em; }
+      .hero-title-anim { opacity: 0; transform: translateY(40px); }
+      .hero-title-anim.animate { animation: fadeUp 500ms ease forwards; }
+      @keyframes fadeUp { to { opacity: 1; transform: translateY(0); } }
+
+      .theme-tshirts {
+        background: repeating-linear-gradient(45deg, rgba(255,63,164,0.04) 0px, transparent 1px, transparent 40px), #0a0a0a;
+      }
+      .theme-tshirts .compact-hero {
+        background: radial-gradient(circle at 72% 28%, rgba(255,63,164,0.24), rgba(10,10,10,0.9) 55%), #0f0f0f;
+      }
+
+      .theme-veste {
+        background:
+          radial-gradient(circle at 1px 1px, rgba(255,63,164,0.2) 1px, transparent 0),
+          #080808;
+        background-size: 30px 30px;
+      }
+      .theme-veste .compact-hero { background: #090909; }
+      .veste-line {
+        height: 2px; width: 0; background: var(--accent); margin-top: 0.6rem;
+      }
+      .veste-line.animate { animation: lineGrow 2s ease forwards; }
+      @keyframes lineGrow { to { width: 100%; } }
+
+      .theme-cagoule {
+        background: #0d0808;
+      }
+      .theme-cagoule .compact-hero::before {
+        content: ""; position: absolute; width: 340px; height: 340px; border-radius: 999px;
+        background: rgba(255,63,164,0.22); filter: blur(120px); top: -90px; right: -60px;
+      }
+      .letter-wrap span { opacity: 0; display: inline-block; transform: translateY(10px); }
+      .letter-wrap.animate span { animation: letterIn 420ms ease forwards; }
+      @keyframes letterIn { to { opacity: 1; transform: translateY(0); } }
+
+      .theme-contact {
+        background: radial-gradient(circle at center, rgba(255,63,164,0.14), #080808 60%);
+      }
+      .theme-offre {
+        background: radial-gradient(circle at 30% 20%, rgba(255,63,164,0.12), #080808 62%);
+      }
+      .theme-crew {
+        background:
+          linear-gradient(180deg, rgba(255,63,164,0.08), transparent 28%),
+          radial-gradient(circle at 78% 14%, rgba(255,63,164,0.12), transparent 45%),
+          #080808;
+      }
+      .crew-intro {
+        margin: 0.5rem 0 1rem;
+        color: rgba(245,245,245,0.74);
+        max-width: 760px;
+      }
+      .offer-grid {
+        display: grid;
+        gap: 0.9rem;
+        margin-top: 0.8rem;
+      }
+      .offer-card {
+        border: 1px solid #2a2a2a;
+        background: rgba(12,12,12,0.82);
+        padding: 1rem;
+      }
+      .offer-card .tag {
+        color: var(--accent);
+        letter-spacing: 0.12em;
+        text-transform: uppercase;
+        font-size: 0.78rem;
+      }
+      .offer-card h3 {
+        margin: 0.3rem 0 0.2rem;
+        font-family: "Bebas Neue", sans-serif;
+        letter-spacing: 0.08em;
+        font-size: clamp(1.5rem, 4.8vw, 2.5rem);
+      }
+      .offer-card p {
+        margin: 0;
+        color: rgba(245,245,245,0.82);
+      }
+      .offer-note {
+        margin-top: 0.85rem;
+        color: rgba(245,245,245,0.58);
+        font-size: 0.9rem;
+      }
+      .offer-see {
+        margin-top: 0.65rem;
+        display: inline-block;
+        border: 1px solid var(--accent);
+        color: var(--accent);
+        padding: 0.32rem 0.55rem;
+        font-family: "Bebas Neue", sans-serif;
+        letter-spacing: 0.12em;
+      }
+      .theme-product {
+        background: #080808;
+      }
+      .product-detail {
+        display: grid;
+        gap: 1rem;
+        align-items: start;
+      }
+      .detail-main {
+        border: 1px solid #232323;
+        background: #101010;
+      }
+      .detail-main img {
+        width: 100%;
+        aspect-ratio: 4 / 5;
+        object-fit: cover;
+        display: block;
+      }
+      .detail-thumbs {
+        display: grid;
+        grid-template-columns: repeat(4, minmax(0, 1fr));
+        gap: 0.45rem;
+        margin-top: 0.5rem;
+      }
+      .detail-thumbs img {
+        width: 100%;
+        aspect-ratio: 1 / 1;
+        object-fit: cover;
+        border: 1px solid #2a2a2a;
+        cursor: pointer;
+      }
+      .detail-info {
+        border: 1px solid #232323;
+        background: rgba(12,12,12,0.82);
+        padding: 0.9rem;
+      }
+      .detail-info h2 {
+        margin: 0 0 0.3rem;
+        font-family: "Bebas Neue", sans-serif;
+        letter-spacing: 0.08em;
+        font-size: clamp(2rem, 6vw, 3.2rem);
+      }
+      .detail-price {
+        font-family: "Bebas Neue", sans-serif;
+        letter-spacing: 0.1em;
+        font-size: 1.2rem;
+      }
+      .option-block { margin-top: 0.8rem; }
+      .option-label {
+        color: rgba(245,245,245,0.75);
+        letter-spacing: 0.12em;
+        text-transform: uppercase;
+        font-size: 0.75rem;
+      }
+      .chip-list { margin-top: 0.35rem; display: flex; flex-wrap: wrap; gap: 0.4rem; }
+      .opt-chip {
+        border: 1px solid #373737;
+        color: #f5f5f5;
+        background: transparent;
+        padding: 0.3rem 0.6rem;
+        font-family: "Barlow Condensed", sans-serif;
+        letter-spacing: 0.06em;
+        cursor: pointer;
+      }
+      .opt-chip.active {
+        border-color: var(--accent);
+        color: var(--accent);
+      }
+      .back-btn {
+        margin-top: 0.9rem;
+        display: inline-block;
+        border: 1px solid #3a3a3a;
+        padding: 0.35rem 0.6rem;
+        font-family: "Bebas Neue", sans-serif;
+        letter-spacing: 0.1em;
+      }
+      .contact-box {
+        width: min(620px, 100%);
+        margin: 0 auto;
+        border: 1px solid #232323;
+        background: rgba(8,8,8,0.72);
+        padding: 1rem;
+      }
+      .contact-box h1 { margin: 0; font-family: "Bebas Neue", sans-serif; font-size: clamp(2.5rem, 8vw, 5rem); }
+      .contact-box .sub { margin: 0 0 0.7rem; font-family: "Dancing Script", cursive; color: var(--accent); font-size: 1.8rem; }
+      .contact-form input,
+      .contact-form textarea {
+        width: 100%; margin-top: 0.55rem; border: 1px solid #333; background: rgba(8,8,8,0.8); color: #fff; padding: 0.55rem;
+        font-family: "Barlow Condensed", sans-serif;
+      }
+      .contact-form input:focus,
+      .contact-form textarea:focus { outline: none; border-color: var(--accent); box-shadow: 0 0 0 2px rgba(255,63,164,0.2); }
+
+      .products-wrap { margin-top: 0.8rem; }
+      .products-grid {
+        display: grid;
+        gap: 10px;
+      }
+      .product-card { position: relative; min-height: 260px; background: #111; border: 1px solid #1d1d1d; overflow: hidden; }
+      .product-card.main { min-height: 540px; }
+      .product-media { position: absolute; inset: 0; overflow: hidden; }
+      .product-media { z-index: 1; }
+      .product-media img { width: 100%; height: 100%; object-fit: cover; transition: transform 280ms ease; }
+      .product-media:has(img[src=""])::after {
+        content: "PHOTO PRODUIT"; position: absolute; inset: 0; display: grid; place-items: center;
+        background: #1a1a1a; color: rgba(245,245,245,0.2); font-family: "Bebas Neue", sans-serif; letter-spacing: 0.14em;
+      }
+      .product-card:hover .product-media img { transform: scale(1.03); }
+      .product-gradient { position: absolute; left: 0; right: 0; bottom: 0; height: 52%; background: linear-gradient(to top, rgba(0,0,0,0.94), transparent); z-index: 2; pointer-events: none; }
+      .product-content { position: absolute; left: 0.9rem; right: 0.9rem; bottom: 0.8rem; z-index: 3; }
+      .cat { color: var(--accent); letter-spacing: 0.15em; font-size: 0.75rem; text-transform: uppercase; }
+      .name { font-family: "Bebas Neue", sans-serif; font-size: 1.6rem; letter-spacing: 0.07em; }
+      .price { font-family: "Bebas Neue", sans-serif; letter-spacing: 0.09em; }
+      .limited {
+        position: absolute; top: 0.65rem; left: 0.65rem; background: var(--accent); color: #111; padding: 0.2rem 0.45rem;
+        font-size: 0.7rem; letter-spacing: 0.1em; font-weight: 700; animation: badgePulse 1.5s ease-in-out infinite; z-index: 3;
+      }
+      @keyframes badgePulse { 50% { transform: scale(1.06); } }
+      .see-product {
+        position: absolute; right: 0.9rem; bottom: -2.2rem; background: var(--accent); color: #111; padding: 0.32rem 0.5rem;
+        font-family: "Bebas Neue", sans-serif; letter-spacing: 0.12em; font-size: 0.82rem; transition: bottom 220ms ease; z-index: 4;
+      }
+      .product-card:hover .see-product { bottom: 3.25rem; }
+      .stagger { opacity: 0; transform: translateY(18px); }
+      .stagger.animate { animation: fadeUp 480ms ease forwards; }
+      .soon-text {
+        margin-top: 1rem; text-align: center; color: rgba(245,245,245,0.4); font-style: italic; animation: softBlink 2.4s ease-in-out infinite;
+      }
+      @keyframes softBlink { 50% { opacity: 0.45; } }
+      .soon-text .arrow { color: var(--accent); }
+
+      .shooting-section { margin-top: 2.2rem; }
+      .shooting-grid { columns: 3 220px; column-gap: 8px; }
+      .shooting-item {
+        position: relative; break-inside: avoid; margin-bottom: 8px; min-height: 220px; overflow: hidden; background: #111; border: 1px solid #1c1c1c;
+      }
+      .shooting-item img { width: 100%; height: 100%; object-fit: cover; transition: transform 260ms ease; }
+      .shooting-item:has(img[src=""])::before {
+        content: "PHOTO SHOOTING"; position: absolute; inset: 0; display: grid; place-items: center; background: #1a1a1a;
+        color: rgba(245,245,245,0.2); font-family: "Bebas Neue", sans-serif; letter-spacing: 0.14em;
+      }
+      .shooting-item::after { content: ""; position: absolute; inset: 0; background: rgba(255,63,164,0); transition: background 220ms ease; }
+      .shooting-item:hover::after { background: rgba(255,63,164,0.15); }
+      .shooting-item:hover img { transform: scale(1.03); }
+      .shooting-cta-wrap { text-align: center; margin-top: 1rem; }
+      .shooting-cta {
+        display: inline-block; border: 1px solid var(--accent); color: var(--accent); padding: 0.58rem 1rem;
+        font-family: "Bebas Neue", sans-serif; letter-spacing: 0.13em; animation: pulseBorder 2.2s ease-in-out infinite;
+        background: none; cursor: pointer;
+      }
+
+      .newsletter-section { padding: 100px 0; }
+      .newsletter { text-align: center; border-top: 1px solid rgba(255,255,255,0.07); padding-top: 2rem; }
+      .newsletter h2 { font-family: "Bebas Neue", sans-serif; font-size: clamp(2rem, 6vw, 3.4rem); margin: 0; }
+      .news-sub { color: rgba(245,245,245,0.7); }
+      .news-form { margin-top: 0.8rem; display: flex; justify-content: center; flex-wrap: wrap; gap: 0.5rem; }
+      .news-form input { min-width: 260px; min-height: 42px; border: 1px solid #333; background: rgba(10,10,10,0.8); color: #fff; padding: 0 0.6rem; }
+      .news-form input:focus { outline: none; border-color: var(--accent); box-shadow: 0 0 0 2px rgba(255,63,164,0.2); }
+      .news-form button { min-height: 42px; border: 1px solid var(--accent); background: var(--accent); color: #111; font-weight: 700; padding: 0 0.9rem; }
+
+      .footer { position: relative; z-index: 2; border-top: 1px solid #232323; padding: 2rem 0; }
+      .footer-grid { display: grid; gap: 1rem; }
+      .f-title { font-family: "Bebas Neue", sans-serif; letter-spacing: 0.1em; font-size: 1.1rem; margin-bottom: 0.4rem; }
+      .footer a, .footer p { margin: 0.2rem 0; color: #d0d0d0; }
+      .footer-nav-btn {
+        border: 0;
+        background: none;
+        color: #d0d0d0;
+        padding: 0;
+        margin: 0.2rem 0;
+        font: inherit;
+        cursor: pointer;
+        text-align: left;
+      }
+      .footer-nav-btn:hover { color: #fff; }
+      .pay { display: inline-block; border: 1px solid #303030; padding: 0.2rem 0.42rem; margin-right: 0.35rem; margin-top: 0.35rem; font-size: 0.75rem; }
+
+      @media (min-width: 900px) {
+        .products-grid { grid-template-columns: 1.45fr 1fr; grid-auto-rows: 260px; }
+        .products-grid .main { grid-row: span 2; }
+        .product-detail { grid-template-columns: 1.1fr 0.9fr; }
+        .offer-grid { grid-template-columns: 1fr 1fr; }
+        .footer-grid { grid-template-columns: 1.3fr 1fr 1fr; }
+      }
+      @media (max-width: 980px) {
+        .menu { display: none; }
+        .burger { display: inline-block; }
+      }
+      @media (max-width: 900px) {
+        .shooting-grid { columns: 2 180px; }
+      }
+      @media (max-width: 620px) {
+        .shooting-grid { columns: 1; }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="site-bg" aria-hidden="true">
+      <div class="bg-layer bg-1"></div>
+      <div class="bg-layer bg-2"></div>
+      <div class="bg-layer bg-3"></div>
+      <div class="bg-overlay"></div>
+    </div>
+
+    <div class="announce">
+      <div class="ticker">
+        🏍 Livraison gratuite dès 90€ ★ Streetwear Bikelife Premium 🔐 Paiement sécurisé 🚀 Lyon City 69 🏍 Livraison internationale ★ LDT CREW
+        &nbsp;&nbsp;
+        🏍 Livraison gratuite dès 90€ ★ Streetwear Bikelife Premium 🔐 Paiement sécurisé 🚀 Lyon City 69 🏍 Livraison internationale ★ LDT CREW
+      </div>
+    </div>
+
+    <header class="header" id="header">
+      <div class="container nav">
+        <button class="logo" data-nav="page-home">
+          <div class="main">LDT CREW</div>
+          <div class="sub">Lyon city 69</div>
+        </button>
+        <nav class="menu">
+          <button data-nav="page-offre">OFFRE</button>
+          <button class="crew-pink" data-nav="page-crew">CREW</button>
+          <button data-nav="page-tshirts">TEE-SHIRTS</button>
+          <button data-nav="page-veste">VESTE</button>
+          <button data-nav="page-cagoule">CAGOULE</button>
+          <button data-nav="page-contact">CONTACT</button>
+        </nav>
+        <button class="burger" id="openMobile">Menu</button>
+        <div class="cart">Panier (0)</div>
+      </div>
+    </header>
+
+    <div class="breadcrumb" id="breadcrumb">
+      <div class="container"><button data-nav="page-home">ACCUEIL</button> → <span id="crumbLabel"></span></div>
+    </div>
+
+    <aside class="mobile" id="mobileMenu">
+      <button id="closeMobile">Fermer ✕</button>
+      <button data-nav="page-offre">OFFRE</button>
+      <button class="crew-pink" data-nav="page-crew">CREW</button>
+      <button data-nav="page-tshirts">TEE-SHIRTS</button>
+      <button data-nav="page-veste">VESTE</button>
+      <button data-nav="page-cagoule">CAGOULE</button>
+      <button data-nav="page-contact">CONTACT</button>
+    </aside>
+
+    <div id="app">
+      <section id="page-home" class="page active show">
+        <section class="hero-home">
+          <div class="home-slideshow" aria-hidden="true">
+            <div class="home-slide s1"></div>
+            <div class="home-slide s2"></div>
+            <div class="home-slide s3"></div>
+          </div>
+          <div class="inner">
+            <div class="label hero-title-anim animate">COLLECTION 2026</div>
+            <h1 class="hero-title hero-title-anim animate">LDT CREW <span class="stroke">CLOTHING</span></h1>
+            <p class="slogan hero-title-anim animate">Lyon city 69</p>
+            <p class="subline hero-title-anim animate">STREETWEAR BIKELIFE PREMIUM</p>
+            <div class="cta-row hero-title-anim animate">
+              <button class="btn primary" data-nav="page-tshirts">Decouvrir la collection</button>
+              <button class="btn outline" data-nav="page-contact">Nous suivre</button>
+            </div>
+          </div>
+        </section>
+      </section>
+
+      <section id="page-offre" class="page">
+        <section class="page-theme theme-offre">
+          <div class="container">
+            <header class="compact-hero">
+              <h1 class="hero-title-anim">OFFRE</h1>
+              <p>— Promotions LDT CREW</p>
+            </header>
+            <div class="offer-grid">
+              <article class="offer-card stagger">
+                <div class="tag">Pack premium</div>
+                <h3>VESTE + T-SHIRT = -10%</h3>
+                <p>Ajoute une veste et un t-shirt dans le panier et profite de 10% de reduction sur le total du pack.</p>
+                <a href="#" class="offer-see" data-offer="bundle">VOIR L'OFFRE</a>
+              </article>
+              <article class="offer-card stagger">
+                <div class="tag">Volume offer</div>
+                <h3>-10% sur le 3eme T-SHIRT</h3>
+                <p>A partir de 3 t-shirts dans la meme commande, le 3eme passe automatiquement avec -10%.</p>
+                <a href="#" class="offer-see" data-offer="thirdtee">VOIR L'OFFRE</a>
+              </article>
+            </div>
+            <p class="offer-note">Offres valables sur les produits LDT CREW eligibles. Non cumulables avec d'autres codes promo.</p>
+            <div class="cta-row" style="justify-content:flex-start; margin-top:0.9rem;">
+              <button class="btn primary" data-nav="page-tshirts">Voir les T-shirts</button>
+              <button class="btn outline" data-nav="page-veste">Voir les Vestes</button>
+            </div>
+          </div>
+        </section>
+      </section>
+
+      <section id="page-crew" class="page">
+        <section class="page-theme theme-crew">
+          <div class="container">
+            <header class="compact-hero">
+              <h1 class="hero-title-anim" style="color:var(--accent);">CREW</h1>
+              <p>— Galerie LDT CREW</p>
+            </header>
+            <p class="crew-intro">
+              Toute l'ambiance LDT en images: bikelife, street, Lyon city 69. Tu peux faire defiler et explorer tous les visuels du crew.
+            </p>
+            <div class="shooting-grid">
+              <article class="shooting-item stagger" style="min-height:320px;"><img src="./assets/products/corridor-01.jpg" alt="Crew LDT 1" /></article>
+              <article class="shooting-item stagger" style="min-height:220px;"><img src="./assets/products/corridor-02.jpg" alt="Crew LDT 2" /></article>
+              <article class="shooting-item stagger" style="min-height:280px;"><img src="./assets/products/corridor-03.jpg" alt="Crew LDT 3" /></article>
+              <article class="shooting-item stagger" style="min-height:250px;"><img src="./assets/products/corridor-04.jpg" alt="Crew LDT 4" /></article>
+              <article class="shooting-item stagger" style="min-height:340px;"><img src="./assets/products/corridor-05.jpg" alt="Crew LDT 5" /></article>
+              <article class="shooting-item stagger" style="min-height:210px;"><img src="./assets/products/corridor-06.jpg" alt="Crew LDT 6" /></article>
+              <article class="shooting-item stagger" style="min-height:290px;"><img src="./assets/products/corridor-07.jpg" alt="Crew LDT 7" /></article>
+              <article class="shooting-item stagger" style="min-height:240px;"><img src="./assets/products/corridor-08.jpg" alt="Crew LDT 8" /></article>
+              <article class="shooting-item stagger" style="min-height:300px;"><img src="./assets/products/corridor-09.jpg" alt="Crew LDT 9" /></article>
+              <article class="shooting-item stagger" style="min-height:260px;"><img src="./assets/products/corridor-10.jpg" alt="Crew LDT 10" /></article>
+              <article class="shooting-item stagger" style="min-height:330px;"><img src="./assets/products/corridor-11.jpg" alt="Crew LDT 11" /></article>
+              <article class="shooting-item stagger" style="min-height:220px;"><img src="./assets/products/corridor-12.jpg" alt="Crew LDT 12" /></article>
+              <article class="shooting-item stagger" style="min-height:280px;"><img src="./assets/products/corridor-13.jpg" alt="Crew LDT 13" /></article>
+              <article class="shooting-item stagger" style="min-height:230px;"><img src="./assets/products/corridor-14.jpg" alt="Crew LDT 14" /></article>
+              <article class="shooting-item stagger" style="min-height:310px;"><img src="./assets/products/corridor-15.jpg" alt="Crew LDT 15" /></article>
+              <article class="shooting-item stagger" style="min-height:250px;"><img src="./assets/products/corridor-16.jpg" alt="Crew LDT 16" /></article>
+            </div>
+          </div>
+        </section>
+      </section>
+
+      <section id="page-tshirts" class="page">
+        <section class="page-theme theme-tshirts">
+          <div class="container">
+            <header class="compact-hero">
+              <h1 class="hero-title-anim">T-SHIRTS</h1>
+              <p>— Collection LDT CREW</p>
+            </header>
+
+            <div class="products-wrap">
+              <div class="products-grid">
+                <article class="product-card main stagger">
+                  <div class="product-id" hidden>tshirt</div>
+                  <div class="product-media"><img src="./assets/products/corridor-05.jpg" alt="T-shirt LDT CREW" /></div>
+                  <div class="product-gradient"></div>
+                  <span class="limited">LIMITED</span><a href="#" class="see-product" data-product="tshirt" data-origin="page-tshirts">VOIR LE PRODUIT</a>
+                  <div class="product-content"><div class="cat">TEE-SHIRT • MODELE UNIQUE</div><div class="name">T-SHIRT SIGNATURE</div><div class="price">39 EUR • COLORIS MULTIPLES</div></div>
+                </article>
+                <article class="product-card stagger">
+                  <div class="product-media"><img src="./assets/products/corridor-08.jpg" alt="Veste LDT CREW" /></div>
+                  <div class="product-gradient"></div>
+                  <span class="limited">LIMITED</span><a href="#" class="see-product" data-product="tshirt" data-origin="page-tshirts">VOIR LE PRODUIT</a>
+                  <div class="product-content"><div class="cat">TEE-SHIRT • MODELE UNIQUE</div><div class="name">SIGNATURE - COLORIS NOIR</div><div class="price">39 EUR</div></div>
+                </article>
+                <article class="product-card stagger">
+                  <div class="product-media"><img src="./assets/products/corridor-13.jpg" alt="Cagoule LDT CREW" /></div>
+                  <div class="product-gradient"></div>
+                  <span class="limited">LIMITED</span><a href="#" class="see-product" data-product="tshirt" data-origin="page-tshirts">VOIR LE PRODUIT</a>
+                  <div class="product-content"><div class="cat">TEE-SHIRT • MODELE UNIQUE</div><div class="name">SIGNATURE - COLORIS BLANC</div><div class="price">39 EUR</div></div>
+                </article>
+              </div>
+              <p class="soon-text">D'autres pièces arrivent bientôt — rejoins la newsletter pour être le premier informé <span class="arrow">↓</span></p>
+            </div>
+
+            <section class="shooting-section">
+              <div class="section-label">— En action</div>
+              <h2>L'UNIVERS LDT</h2>
+              <div class="shooting-grid">
+                <article class="shooting-item stagger" style="min-height:320px;"><img src="./assets/products/corridor-01.jpg" alt="shooting LDT CREW 1" /></article>
+                <article class="shooting-item stagger" style="min-height:220px;"><img src="./assets/products/corridor-02.jpg" alt="shooting LDT CREW 2" /></article>
+                <article class="shooting-item stagger" style="min-height:280px;"><img src="./assets/products/corridor-03.jpg" alt="shooting LDT CREW 3" /></article>
+                <article class="shooting-item stagger" style="min-height:240px;"><img src="./assets/products/corridor-04.jpg" alt="shooting LDT CREW 4" /></article>
+                <article class="shooting-item stagger" style="min-height:350px;"><img src="./assets/products/corridor-06.jpg" alt="shooting LDT CREW 5" /></article>
+                <article class="shooting-item stagger" style="min-height:210px;"><img src="./assets/products/corridor-07.jpg" alt="shooting LDT CREW 6" /></article>
+                <article class="shooting-item stagger" style="min-height:290px;"><img src="./assets/products/corridor-09.jpg" alt="shooting LDT CREW 7" /></article>
+                <article class="shooting-item stagger" style="min-height:250px;"><img src="./assets/products/corridor-12.jpg" alt="shooting LDT CREW 8" /></article>
+              </div>
+              <div class="shooting-cta-wrap"><button class="shooting-cta" data-nav="page-crew">VOIR TOUT L'UNIVERS ↗</button></div>
+            </section>
+          </div>
+        </section>
+      </section>
+
+      <section id="page-veste" class="page">
+        <section class="page-theme theme-veste">
+          <div class="container">
+            <header class="compact-hero">
+              <h1 class="hero-title-anim">VESTES</h1>
+              <p>— Collection LDT CREW</p>
+              <div class="veste-line"></div>
+            </header>
+
+            <div class="products-wrap">
+              <div class="products-grid">
+                <article class="product-card main stagger">
+                  <div class="product-media"><img src="./assets/products/corridor-08.jpg" alt="Veste LDT CREW principale" /></div>
+                  <div class="product-gradient"></div>
+                  <span class="limited">LIMITED</span><a href="#" class="see-product" data-product="veste" data-origin="page-veste">VOIR LE PRODUIT</a>
+                  <div class="product-content"><div class="cat">VESTE • MODELE UNIQUE</div><div class="name">VESTE TECH LYON</div><div class="price">99 EUR • COLORIS MULTIPLES</div></div>
+                </article>
+                <article class="product-card stagger">
+                  <div class="product-media"><img src="./assets/products/corridor-06.jpg" alt="T-shirt LDT CREW" /></div>
+                  <div class="product-gradient"></div>
+                  <span class="limited">LIMITED</span><a href="#" class="see-product" data-product="veste" data-origin="page-veste">VOIR LE PRODUIT</a>
+                  <div class="product-content"><div class="cat">VESTE • MODELE UNIQUE</div><div class="name">TECH LYON - COLORIS NOIR</div><div class="price">99 EUR</div></div>
+                </article>
+                <article class="product-card stagger">
+                  <div class="product-media"><img src="./assets/products/corridor-14.jpg" alt="Cagoule LDT CREW" /></div>
+                  <div class="product-gradient"></div>
+                  <span class="limited">LIMITED</span><a href="#" class="see-product" data-product="veste" data-origin="page-veste">VOIR LE PRODUIT</a>
+                  <div class="product-content"><div class="cat">VESTE • MODELE UNIQUE</div><div class="name">TECH LYON - COLORIS GRIS</div><div class="price">99 EUR</div></div>
+                </article>
+              </div>
+              <p class="soon-text">D'autres pièces arrivent bientôt — rejoins la newsletter pour être le premier informé <span class="arrow">↓</span></p>
+            </div>
+
+            <section class="shooting-section">
+              <div class="section-label">— En action</div>
+              <h2>L'UNIVERS LDT</h2>
+              <div class="shooting-grid">
+                <article class="shooting-item stagger" style="min-height:320px;"><img src="./assets/products/corridor-10.jpg" alt="shooting LDT CREW 1" /></article>
+                <article class="shooting-item stagger" style="min-height:220px;"><img src="./assets/products/corridor-11.jpg" alt="shooting LDT CREW 2" /></article>
+                <article class="shooting-item stagger" style="min-height:280px;"><img src="./assets/products/corridor-08.jpg" alt="shooting LDT CREW 3" /></article>
+                <article class="shooting-item stagger" style="min-height:240px;"><img src="./assets/products/corridor-06.jpg" alt="shooting LDT CREW 4" /></article>
+                <article class="shooting-item stagger" style="min-height:350px;"><img src="./assets/products/corridor-14.jpg" alt="shooting LDT CREW 5" /></article>
+                <article class="shooting-item stagger" style="min-height:210px;"><img src="./assets/products/corridor-15.jpg" alt="shooting LDT CREW 6" /></article>
+                <article class="shooting-item stagger" style="min-height:290px;"><img src="./assets/products/corridor-16.jpg" alt="shooting LDT CREW 7" /></article>
+                <article class="shooting-item stagger" style="min-height:250px;"><img src="./assets/products/corridor-09.jpg" alt="shooting LDT CREW 8" /></article>
+              </div>
+              <div class="shooting-cta-wrap"><button class="shooting-cta" data-nav="page-crew">VOIR TOUT L'UNIVERS ↗</button></div>
+            </section>
+          </div>
+        </section>
+      </section>
+
+      <section id="page-cagoule" class="page">
+        <section class="page-theme theme-cagoule">
+          <div class="container">
+            <header class="compact-hero">
+              <h1 class="hero-title-anim letter-wrap" id="cagouleTitle"></h1>
+              <p>— Collection LDT CREW</p>
+            </header>
+
+            <div class="products-wrap">
+              <div class="products-grid">
+                <article class="product-card main stagger">
+                  <div class="product-media"><img src="" alt="Cagoule LDT CREW principale" /></div>
+                  <div class="product-gradient"></div>
+                  <span class="limited">LIMITED</span><a href="#" class="see-product" data-product="cagoule" data-origin="page-cagoule">VOIR LE PRODUIT</a>
+                  <div class="product-content"><div class="cat">CAGOULE</div><div class="name">CAGOULE BIKELIFE</div><div class="price">29 EUR</div></div>
+                </article>
+                <article class="product-card stagger">
+                  <div class="product-media"><img src="" alt="Veste LDT CREW" /></div>
+                  <div class="product-gradient"></div>
+                  <span class="limited">LIMITED</span><a href="#" class="see-product" data-product="cagoule" data-origin="page-cagoule">VOIR LE PRODUIT</a>
+                  <div class="product-content"><div class="cat">CAGOULE</div><div class="name">CAGOULE LYON CITY</div><div class="price">29 EUR</div></div>
+                </article>
+                <article class="product-card stagger">
+                  <div class="product-media"><img src="" alt="T-shirt LDT CREW" /></div>
+                  <div class="product-gradient"></div>
+                  <span class="limited">LIMITED</span><a href="#" class="see-product" data-product="cagoule" data-origin="page-cagoule">VOIR LE PRODUIT</a>
+                  <div class="product-content"><div class="cat">CAGOULE</div><div class="name">CAGOULE SIGNATURE</div><div class="price">35 EUR</div></div>
+                </article>
+              </div>
+              <p class="soon-text">D'autres pièces arrivent bientôt — rejoins la newsletter pour être le premier informé <span class="arrow">↓</span></p>
+            </div>
+
+            <section class="shooting-section">
+              <div class="section-label">— En action</div>
+              <h2>L'UNIVERS LDT</h2>
+              <div class="shooting-grid">
+                <article class="shooting-item stagger" style="min-height:320px;"><img src="" alt="shooting LDT CREW 1" /></article>
+                <article class="shooting-item stagger" style="min-height:220px;"><img src="" alt="shooting LDT CREW 2" /></article>
+                <article class="shooting-item stagger" style="min-height:280px;"><img src="" alt="shooting LDT CREW 3" /></article>
+                <article class="shooting-item stagger" style="min-height:240px;"><img src="" alt="shooting LDT CREW 4" /></article>
+                <article class="shooting-item stagger" style="min-height:350px;"><img src="" alt="shooting LDT CREW 5" /></article>
+                <article class="shooting-item stagger" style="min-height:210px;"><img src="" alt="shooting LDT CREW 6" /></article>
+                <article class="shooting-item stagger" style="min-height:290px;"><img src="" alt="shooting LDT CREW 7" /></article>
+                <article class="shooting-item stagger" style="min-height:250px;"><img src="" alt="shooting LDT CREW 8" /></article>
+              </div>
+              <div class="shooting-cta-wrap"><button class="shooting-cta" data-nav="page-crew">VOIR TOUT L'UNIVERS ↗</button></div>
+            </section>
+          </div>
+        </section>
+      </section>
+
+      <section id="page-contact" class="page">
+        <section class="page-theme theme-contact">
+          <div class="container">
+            <div class="contact-box hero-title-anim">
+              <h1>ÉCRIS-NOUS</h1>
+              <p class="sub">on répond vite</p>
+              <form class="contact-form">
+                <input type="text" placeholder="Nom" />
+                <input type="email" placeholder="Email" />
+                <textarea rows="5" placeholder="Message"></textarea>
+                <button type="submit" class="btn primary" style="margin-top:0.6rem;">Envoyer</button>
+              </form>
+            </div>
+          </div>
+        </section>
+      </section>
+
+      <section id="page-product" class="page">
+        <section class="page-theme theme-product">
+          <div class="container">
+            <header class="compact-hero">
+              <h1 class="hero-title-anim" id="detailTitle">PRODUIT</h1>
+              <p id="detailSubtitle">— Modele unique</p>
+            </header>
+            <div class="product-detail">
+              <div>
+                <div class="detail-main">
+                  <img id="detailMainImage" src="./assets/products/corridor-05.jpg" alt="Produit LDT CREW" />
+                </div>
+                <div class="detail-thumbs" id="detailThumbs"></div>
+              </div>
+              <aside class="detail-info">
+                <h2 id="detailName">MODELE SIGNATURE</h2>
+                <div class="detail-price" id="detailPrice">39 EUR</div>
+                <div class="option-block">
+                  <div class="option-label">Choix couleur</div>
+                  <div class="chip-list" id="colorChips"></div>
+                </div>
+                <div class="option-block">
+                  <div class="option-label">Choix taille</div>
+                  <div class="chip-list" id="sizeChips">
+                    <button class="opt-chip">XS</button>
+                    <button class="opt-chip active">S</button>
+                    <button class="opt-chip">M</button>
+                    <button class="opt-chip">L</button>
+                    <button class="opt-chip">XL</button>
+                    <button class="opt-chip">XXL</button>
+                  </div>
+                </div>
+                <a href="#" class="back-btn" id="backToCategory">← RETOUR CATEGORIE</a>
+              </aside>
+            </div>
+          </div>
+        </section>
+      </section>
+
+      <section id="page-offer-product" class="page">
+        <section class="page-theme theme-product">
+          <div class="container">
+            <header class="compact-hero">
+              <h1 class="hero-title-anim" id="offerDetailTitle">OFFRE</h1>
+              <p id="offerDetailSubtitle">— Fiche offre premium</p>
+            </header>
+            <div class="product-detail">
+              <div>
+                <div class="detail-main">
+                  <img id="offerDetailMainImage" src="./assets/products/corridor-08.jpg" alt="Offre LDT CREW" />
+                </div>
+                <div class="detail-thumbs" id="offerDetailThumbs"></div>
+              </div>
+              <aside class="detail-info">
+                <h2 id="offerDetailName">OFFRE LDT</h2>
+                <div class="detail-price" id="offerDetailPrice">-10%</div>
+                <div class="option-block">
+                  <div class="option-label">Choix couleur</div>
+                  <div class="chip-list" id="offerColorChips"></div>
+                </div>
+                <div class="option-block">
+                  <div class="option-label">Choix taille</div>
+                  <div class="chip-list" id="offerSizeChips">
+                    <button class="opt-chip">XS</button>
+                    <button class="opt-chip active">S</button>
+                    <button class="opt-chip">M</button>
+                    <button class="opt-chip">L</button>
+                    <button class="opt-chip">XL</button>
+                    <button class="opt-chip">XXL</button>
+                  </div>
+                </div>
+                <div class="option-block">
+                  <div class="option-label">Details promo</div>
+                  <p id="offerDetailText" style="margin:0.35rem 0 0;color:rgba(245,245,245,0.75);">
+                    Offre active sur les articles eligibles.
+                  </p>
+                </div>
+                <a href="#" class="back-btn" id="backToOffer">← RETOUR OFFRES</a>
+              </aside>
+            </div>
+          </div>
+        </section>
+      </section>
+    </div>
+
+    <footer class="footer" id="contact">
+      <div class="container footer-grid">
+        <div>
+          <div class="f-title">LDT CREW</div>
+          <p>Streetwear Bikelife Premium — Lyon City 69.</p>
+        </div>
+        <div>
+          <div class="f-title">Mon compte</div>
+          <button class="footer-nav-btn" data-nav="page-contact">Mon compte</button><br />
+          <button class="footer-nav-btn" data-nav="page-offre">Mes commandes</button><br />
+          <button class="footer-nav-btn" data-nav="page-contact">CGV</button><br />
+          <button class="footer-nav-btn" data-nav="page-contact">Expedition</button><br />
+          <button class="footer-nav-btn" data-nav="page-contact">CGU</button>
+        </div>
+        <div>
+          <div class="f-title">L'univers</div>
+          <button class="footer-nav-btn" data-nav="page-crew">Collections</button><br />
+          <button class="footer-nav-btn" data-nav="page-tshirts">Recherche</button>
+          <p style="margin-top:0.8rem;">© 2026 LDT CREW</p>
+          <span class="pay">Visa</span><span class="pay">Mastercard</span><span class="pay">PayPal</span><span class="pay">Apple Pay</span>
+        </div>
+      </div>
+    </footer>
+
+    <script>
+      const header = document.getElementById("header");
+      const openMobile = document.getElementById("openMobile");
+      const closeMobile = document.getElementById("closeMobile");
+      const mobileMenu = document.getElementById("mobileMenu");
+      const app = document.getElementById("app");
+      const pages = Array.from(document.querySelectorAll(".page"));
+      const navButtons = Array.from(document.querySelectorAll("[data-nav]"));
+      const crumb = document.getElementById("breadcrumb");
+      const crumbLabel = document.getElementById("crumbLabel");
+      const cagouleTitle = document.getElementById("cagouleTitle");
+      const detailTitle = document.getElementById("detailTitle");
+      const detailSubtitle = document.getElementById("detailSubtitle");
+      const detailName = document.getElementById("detailName");
+      const detailPrice = document.getElementById("detailPrice");
+      const detailMainImage = document.getElementById("detailMainImage");
+      const detailThumbs = document.getElementById("detailThumbs");
+      const colorChips = document.getElementById("colorChips");
+      const sizeChips = document.getElementById("sizeChips");
+      const backToCategory = document.getElementById("backToCategory");
+      const offerDetailTitle = document.getElementById("offerDetailTitle");
+      const offerDetailSubtitle = document.getElementById("offerDetailSubtitle");
+      const offerDetailName = document.getElementById("offerDetailName");
+      const offerDetailPrice = document.getElementById("offerDetailPrice");
+      const offerDetailText = document.getElementById("offerDetailText");
+      const offerDetailMainImage = document.getElementById("offerDetailMainImage");
+      const offerDetailThumbs = document.getElementById("offerDetailThumbs");
+      const offerColorChips = document.getElementById("offerColorChips");
+      const offerSizeChips = document.getElementById("offerSizeChips");
+      const backToOffer = document.getElementById("backToOffer");
+      let currentPageId = "page-home";
+      let previousCategoryPage = "page-home";
+
+      const productPages = {
+        "page-offre": "Offre",
+        "page-crew": "Crew",
+        "page-tshirts": "T-Shirts",
+        "page-veste": "Vestes",
+        "page-cagoule": "Cagoules",
+        "page-product": "Produit",
+        "page-offer-product": "Offre Produit"
+      };
+
+      const productCatalog = {
+        tshirt: {
+          title: "T-SHIRTS",
+          subtitle: "— Modele unique, coloris multiples",
+          name: "T-SHIRT SIGNATURE",
+          price: "39 EUR",
+          colors: [
+            { label: "Noir", image: "./assets/products/corridor-06.jpg" },
+            { label: "Blanc", image: "./assets/products/corridor-05.jpg" },
+            { label: "Bleu", image: "./assets/products/corridor-01.jpg" }
+          ],
+          thumbs: [
+            "./assets/products/corridor-05.jpg",
+            "./assets/products/corridor-01.jpg",
+            "./assets/products/corridor-02.jpg",
+            "./assets/products/corridor-03.jpg"
+          ]
+        },
+        veste: {
+          title: "VESTE",
+          subtitle: "— Modele unique, coloris multiples",
+          name: "VESTE TECH LYON",
+          price: "99 EUR",
+          colors: [
+            { label: "Noir", image: "./assets/products/corridor-08.jpg" },
+            { label: "Gris", image: "./assets/products/corridor-14.jpg" },
+            { label: "Blanc", image: "./assets/products/corridor-10.jpg" }
+          ],
+          thumbs: [
+            "./assets/products/corridor-08.jpg",
+            "./assets/products/corridor-10.jpg",
+            "./assets/products/corridor-11.jpg",
+            "./assets/products/corridor-14.jpg"
+          ]
+        },
+        cagoule: {
+          title: "CAGOULE",
+          subtitle: "— Modele unique, coloris multiples",
+          name: "CAGOULE BIKELIFE",
+          price: "29 EUR",
+          colors: [
+            { label: "Noir", image: "./assets/products/corridor-15.jpg" },
+            { label: "Gris", image: "./assets/products/corridor-16.jpg" },
+            { label: "Blanc", image: "./assets/products/corridor-13.jpg" }
+          ],
+          thumbs: [
+            "./assets/products/corridor-13.jpg",
+            "./assets/products/corridor-14.jpg",
+            "./assets/products/corridor-15.jpg",
+            "./assets/products/corridor-16.jpg"
+          ]
+        }
+      };
+
+      const offerCatalog = {
+        bundle: {
+          title: "OFFRE",
+          subtitle: "— Pack veste + t-shirt",
+          name: "PACK VESTE + T-SHIRT",
+          price: "-10% IMMEDIAT",
+          details: "Le pack applique automatiquement -10% sur la combinaison veste + t-shirt eligibles.",
+          colors: [
+            { label: "Noir", image: "./assets/products/corridor-08.jpg" },
+            { label: "Blanc", image: "./assets/products/corridor-05.jpg" },
+            { label: "Gris", image: "./assets/products/corridor-10.jpg" }
+          ],
+          thumbs: [
+            "./assets/products/corridor-08.jpg",
+            "./assets/products/corridor-05.jpg",
+            "./assets/products/corridor-10.jpg",
+            "./assets/products/corridor-11.jpg"
+          ]
+        },
+        thirdtee: {
+          title: "OFFRE",
+          subtitle: "— 3e t-shirt remisé",
+          name: "3E T-SHIRT = -10%",
+          price: "REDUCTION AUTO",
+          details: "A partir de 3 t-shirts dans la meme commande, le 3eme passe a -10% automatiquement.",
+          colors: [
+            { label: "Noir", image: "./assets/products/corridor-06.jpg" },
+            { label: "Blanc", image: "./assets/products/corridor-01.jpg" },
+            { label: "Bleu", image: "./assets/products/corridor-02.jpg" }
+          ],
+          thumbs: [
+            "./assets/products/corridor-06.jpg",
+            "./assets/products/corridor-01.jpg",
+            "./assets/products/corridor-02.jpg",
+            "./assets/products/corridor-03.jpg"
+          ]
+        }
+      };
+
+      function bindSelectableChips(root) {
+        root?.querySelectorAll(".opt-chip").forEach((chip) => {
+          chip.addEventListener("click", () => {
+            root.querySelectorAll(".opt-chip").forEach((c) => c.classList.remove("active"));
+            chip.classList.add("active");
+          });
+        });
+      }
+
+      function openProductPage(key, originPage) {
+        const product = productCatalog[key];
+        if (!product) return;
+        previousCategoryPage = originPage || "page-home";
+        detailTitle.textContent = product.title;
+        detailSubtitle.textContent = product.subtitle;
+        detailName.textContent = product.name;
+        detailPrice.textContent = product.price;
+        detailMainImage.src = product.colors[0].image;
+
+        colorChips.innerHTML = "";
+        product.colors.forEach((color, idx) => {
+          const btn = document.createElement("button");
+          btn.className = "opt-chip" + (idx === 0 ? " active" : "");
+          btn.textContent = color.label;
+          btn.addEventListener("click", () => {
+            colorChips.querySelectorAll(".opt-chip").forEach((c) => c.classList.remove("active"));
+            btn.classList.add("active");
+            detailMainImage.src = color.image;
+          });
+          colorChips.appendChild(btn);
+        });
+
+        detailThumbs.innerHTML = "";
+        product.thumbs.forEach((src) => {
+          const img = document.createElement("img");
+          img.src = src;
+          img.alt = product.name + " photo";
+          img.addEventListener("click", () => {
+            detailMainImage.src = src;
+          });
+          detailThumbs.appendChild(img);
+        });
+
+        bindSelectableChips(sizeChips);
+        navigate("page-product");
+      }
+
+      function openOfferProductPage(key) {
+        const offer = offerCatalog[key];
+        if (!offer) return;
+        previousCategoryPage = "page-offre";
+        offerDetailTitle.textContent = offer.title;
+        offerDetailSubtitle.textContent = offer.subtitle;
+        offerDetailName.textContent = offer.name;
+        offerDetailPrice.textContent = offer.price;
+        offerDetailText.textContent = offer.details;
+        offerDetailMainImage.src = offer.colors[0].image;
+
+        offerColorChips.innerHTML = "";
+        offer.colors.forEach((color, idx) => {
+          const btn = document.createElement("button");
+          btn.className = "opt-chip" + (idx === 0 ? " active" : "");
+          btn.textContent = color.label;
+          btn.addEventListener("click", () => {
+            offerColorChips.querySelectorAll(".opt-chip").forEach((c) => c.classList.remove("active"));
+            btn.classList.add("active");
+            offerDetailMainImage.src = color.image;
+          });
+          offerColorChips.appendChild(btn);
+        });
+
+        offerDetailThumbs.innerHTML = "";
+        offer.thumbs.forEach((src) => {
+          const img = document.createElement("img");
+          img.src = src;
+          img.alt = offer.name + " photo";
+          img.addEventListener("click", () => {
+            offerDetailMainImage.src = src;
+          });
+          offerDetailThumbs.appendChild(img);
+        });
+
+        bindSelectableChips(offerSizeChips);
+        navigate("page-offer-product");
+      }
+
+      function restartPageAnimations(page) {
+        page.querySelectorAll(".hero-title-anim").forEach((el) => {
+          el.classList.remove("animate");
+          void el.offsetWidth;
+          el.classList.add("animate");
+        });
+        page.querySelectorAll(".stagger").forEach((el, idx) => {
+          el.classList.remove("animate");
+          el.style.animationDelay = (idx * 100) + "ms";
+          void el.offsetWidth;
+          el.classList.add("animate");
+        });
+        const vesteLine = page.querySelector(".veste-line");
+        if (vesteLine) {
+          vesteLine.classList.remove("animate");
+          void vesteLine.offsetWidth;
+          vesteLine.classList.add("animate");
+        }
+        if (page.id === "page-cagoule" && cagouleTitle) {
+          cagouleTitle.innerHTML = "";
+          const text = "CAGOULES";
+          [...text].forEach((char, i) => {
+            const span = document.createElement("span");
+            span.textContent = char;
+            span.style.animationDelay = (i * 50) + "ms";
+            cagouleTitle.appendChild(span);
+          });
+          cagouleTitle.classList.remove("animate");
+          void cagouleTitle.offsetWidth;
+          cagouleTitle.classList.add("animate");
+        }
+      }
+
+      function setActiveLink(pageId) {
+        navButtons.forEach((btn) => {
+          btn.classList.toggle("active", btn.dataset.nav === pageId);
+        });
+      }
+
+      function updateBreadcrumb(pageId) {
+        if (productPages[pageId]) {
+          crumb.classList.add("show");
+          crumbLabel.textContent = productPages[pageId].toUpperCase();
+        } else {
+          crumb.classList.remove("show");
+        }
+      }
+
+      function navigate(pageId) {
+        if (pageId === currentPageId) return;
+        const current = document.getElementById(currentPageId);
+        const next = document.getElementById(pageId);
+        if (!next) return;
+
+        app.classList.add("transitioning");
+        if (current) current.classList.remove("show");
+
+        setTimeout(() => {
+          if (current) current.classList.remove("active");
+          next.classList.add("active");
+          next.classList.remove("show");
+          window.scrollTo({ top: 0, behavior: "auto" });
+          setActiveLink(pageId);
+          updateBreadcrumb(pageId);
+          document.body.classList.toggle("on-home", pageId === "page-home");
+
+          requestAnimationFrame(() => {
+            next.classList.add("show");
+            app.classList.remove("transitioning");
+            restartPageAnimations(next);
+          });
+
+          currentPageId = pageId;
+        }, 300);
+      }
+
+      window.navigate = navigate;
+
+      navButtons.forEach((btn) => {
+        btn.addEventListener("click", () => {
+          navigate(btn.dataset.nav);
+          mobileMenu.classList.remove("open");
+        });
+      });
+
+      document.querySelectorAll(".see-product").forEach((btn) => {
+        btn.addEventListener("click", (event) => {
+          event.preventDefault();
+          openProductPage(btn.dataset.product, btn.dataset.origin);
+        });
+      });
+
+      document.querySelectorAll(".offer-see").forEach((btn) => {
+        btn.addEventListener("click", (event) => {
+          event.preventDefault();
+          openOfferProductPage(btn.dataset.offer);
+        });
+      });
+
+      backToCategory?.addEventListener("click", (event) => {
+        event.preventDefault();
+        navigate(previousCategoryPage || "page-home");
+      });
+
+      backToOffer?.addEventListener("click", (event) => {
+        event.preventDefault();
+        navigate("page-offre");
+      });
+
+      openMobile?.addEventListener("click", () => mobileMenu.classList.add("open"));
+      closeMobile?.addEventListener("click", () => mobileMenu.classList.remove("open"));
+
+      window.addEventListener("scroll", () => {
+        header.classList.toggle("scrolled", window.scrollY > 24);
+      });
+
+      pages.forEach((page) => {
+        if (page.id !== currentPageId) page.classList.remove("active", "show");
+      });
+      setActiveLink(currentPageId);
+      updateBreadcrumb(currentPageId);
+      document.body.classList.toggle("on-home", currentPageId === "page-home");
+      restartPageAnimations(document.getElementById(currentPageId));
+    </script>
+  </body>
+</html>
